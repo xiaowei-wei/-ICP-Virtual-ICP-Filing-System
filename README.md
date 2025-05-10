@@ -30,7 +30,7 @@ Nginx 或 Apache
 Linux 或 Windows 服务器
 
 ## 项目声明
-部分UI参考云团子
+部分UI参考[云团子](https://github.com/yuntuanzi/TuanICP/)
 
 严禁倒卖或未经授权进行二次开发后倒卖源码。
 
