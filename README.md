@@ -1,23 +1,46 @@
-# -ICP-Virtual-ICP-Filing-System
-:two_hearts:维ICP备案系统是一款开源、界面美观的第三方icp虚拟备案系统，适合作为博客页脚装饰。<br>
-:two_hearts:The Wei ICP Filing System is an open-source, third-party virtual ICP filing platform with a sleek and visually appealing interface, perfectly suited for display as a decorative element in the footer section of blogs
-## 作者的联系方式
-:penguin::penguin:企鹅交流群：[点击链接即可跳转](https://qm.qq.com/q/PP4656R0Ma)<br>
-:laughing::laughing:我希望你加入本群让我们一起交流
+# 虚拟ICP备案系统
 
-## 作者项目声明
-:rose::rose::rose:这并非二改借鉴了云团子的部分ui
-:rose::rose::rose:严禁倒卖或未经授权进行二次开发后倒卖源码。<br>
-:rose::rose::rose:二开或模仿本项目的，要求必须开源在Github，并且在显著位置标注原作者昵称和仓库链接。<br>
-:rose::rose::rose:包括但不限于访问、参与开发、部署、下载、转发、Star等方式关联到本项目的
-## 支持环境
-:laughing::laughing:PHP >= 7.4<br>
-:laughing::laughing:MySQL >= 5.6<br>
-:laughing::laughing:Nginx 或 Apache<br>
-:laughing::laughing:Linux 或 Windows 服务器<br>
-## 这是第一版的截图
-![QQ20250510-092007](https://github.com/user-attachments/assets/0a1be2dc-d2d4-4a59-a93f-fb6b54f9c639)
-![6F36956C5887D9FC8DEFCB479551D812](https://github.com/user-attachments/assets/0380ad1c-2328-4d76-b160-6da73efcb32f)
-![QQ20250510-092215](https://github.com/user-attachments/assets/15d3a43d-863b-4cf7-8ca0-dbd5619f8d30)
-![QQ20250510-092311](https://github.com/user-attachments/assets/861017c8-4065-426a-8fa5-5e96afbb8fa8)
+## 项目简介
+本项目是一个模拟中国ICP备案流程的系统，提供备案信息查询、公示及后台管理功能，用于学习或演示用途。
 
+## 系统功能
+
+### 首页功能
+- 备案查询：按域名/备案号查询备案信息
+- 信息公示：查看已通过备案的网站列表
+- 关于页面：常见问题、备案政策说明
+
+### 管理端功能
+- 备案审核：审核备案申请，通过或驳回
+- 备案申请：管理员可以代为提交备案申请
+- 数据统计：备案通过率、申请趋势统计
+- 系统设置：备案号生成规则、敏感词过滤
+
+## 技术栈
+- 前端：HTML/CSS/JavaScript + Bootstrap（响应式布局）
+- 后端：PHP
+- 数据库：MySQL
+
+## 安装说明
+1. 将项目文件复制到Web服务器根目录
+2. 导入数据库脚本 `database/icp_db.sql`
+3. 修改 `config/database.php` 中的数据库连接信息
+4. 访问系统首页
+
+## 管理员账户
+- 账户：admin
+- 密码：123456
+
+## 目录结构
+```
+├── index.php                 # 系统首页
+├── admin/                    # 管理后台
+├── api/                      # API接口
+├── assets/                   # 静态资源
+│   ├── css/                  # 样式文件
+│   ├── js/                   # JavaScript文件
+│   └── images/               # 图片资源
+├── config/                   # 配置文件
+├── database/                 # 数据库脚本
+└── includes/                 # 公共函数和类
+```

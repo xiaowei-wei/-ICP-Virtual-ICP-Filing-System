@@ -1,0 +1,336 @@
+/* --- Glass Sidebar & Crystal Logo --- */
+.sidebar-glass {
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.12);
+  border-top-right-radius: 22px;
+  border-bottom-right-radius: 22px;
+  backdrop-filter: blur(18px) saturate(1.2);
+  border-left: 1.5px solid rgba(180,200,230,0.13);
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 220px;
+  z-index: 100;
+  transition: box-shadow 0.3s, background 0.3s;
+}
+.sidebar-crystal-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  margin-top: 8px;
+  filter: drop-shadow(0 2px 12px rgba(179,229,252,0.18));
+  animation: crystalFloat 3.2s ease-in-out infinite alternate;
+}
+@keyframes crystalFloat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+
+/* --- Sidebar Menu --- */
+.sidebar-menu {
+  padding: 0;
+  margin: 0;
+}
+.sidebar-menu .nav-item {
+  margin-bottom: 8px;
+  position: relative;
+}
+.sidebar-menu .nav-link {
+  display: flex;
+  align-items: center;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-weight: 600;
+  color: #444a53;
+  background: linear-gradient(90deg,rgba(230,238,255,0.92) 0%,rgba(200,215,240,0.82) 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px 0 rgba(180,200,230,0.07);
+  padding: 0.95rem 1.5rem;
+  transition: background 0.25s, box-shadow 0.25s, color 0.2s, border 0.2s, filter 0.2s;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+}
+.sidebar-menu .nav-link .sidebar-icon {
+  width: 1.7em;
+  height: 1.7em;
+  margin-right: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 6px rgba(52,120,246,0.08));
+  opacity: 0.92;
+  transition: filter 0.2s, opacity 0.2s;
+}
+.dashboard-icon { background: url('../img/sidebar/dashboard.svg') no-repeat center/1.7em; }
+.docflow-icon { background: url('../img/sidebar/docflow.svg') no-repeat center/1.7em; }
+.bell-icon { background: url('../img/sidebar/bell.svg') no-repeat center/1.7em; }
+.info-icon { background: url('../img/sidebar/info.svg') no-repeat center/1.7em; }
+.gear-icon { background: url('../img/sidebar/gear.svg') no-repeat center/1.7em; }
+.setting-icon { background: url('../img/sidebar/setting.svg') no-repeat center/1.7em; }
+.seo-icon { background: url('../img/sidebar/seo.svg') no-repeat center/1.7em; }
+.logout-icon { background: url('../img/sidebar/logout.svg') no-repeat center/1.7em; }
+
+.sidebar-menu .nav-link.active, .sidebar-menu .nav-link:focus {
+  color: #fff;
+  background: linear-gradient(90deg,rgba(255,255,255,0.98) 0%,rgba(180,210,255,0.88) 100%);
+  box-shadow: 0 4px 18px 0 rgba(255,191,64,0.13), 0 2px 8px 0 rgba(52,120,246,0.10);
+  border: 1.5px solid rgba(255,191,64,0.18);
+  filter: drop-shadow(0 0 16px #ffd18088);
+  animation: breathAmber 1.8s infinite alternate;
+}
+@keyframes breathAmber {
+  0% { box-shadow: 0 4px 18px 0 rgba(255,191,64,0.13); }
+  100% { box-shadow: 0 8px 32px 0 rgba(255,191,64,0.22); }
+}
+
+.sidebar-menu .nav-link .sidebar-text {
+  flex: 1;
+  color: #444a53;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+.sidebar-menu .nav-link.active .sidebar-text {
+  color: #ffb74d;
+  text-shadow: 0 0 8px #fffde7, 0 0 2px #ffd180;
+}
+
+/* --- Urgent Item Coral Orange Border --- */
+.sidebar-menu .nav-item.urgent .nav-link {
+  border: 2px solid #ff7043;
+  box-shadow: 0 0 12px 0 #ff704366;
+  animation: coralFlow 1.2s infinite alternate;
+}
+@keyframes coralFlow {
+  0% { border-color: #ff7043; }
+  100% { border-color: #ffab91; }
+}
+
+/* --- Multi-State Indicator --- */
+.sidebar-menu .nav-link[data-state="success"] {
+  box-shadow: 0 0 0 3px #6fffbf44;
+}
+.sidebar-menu .nav-link[data-state="warning"] {
+  box-shadow: 0 0 0 3px #fff59d55;
+}
+.sidebar-menu .nav-link[data-state="info"] {
+  box-shadow: 0 0 0 3px #ffb6c155;
+}
+
+/* --- Ice Blue Outline for High-Frequency --- */
+.sidebar-menu .nav-link[data-freq="high"] {
+  border: 1.5px solid #b3e5fc;
+  box-shadow: 0 0 8px #b3e5fc55;
+  background: linear-gradient(90deg,rgba(230,245,255,0.98) 0%,rgba(179,229,252,0.88) 100%);
+}
+
+/* --- Fold/Expand Menu Halo Effect --- */
+.sidebar-menu .nav-item.open>.nav-link {
+  box-shadow: 0 0 16px 0 #b3e5fc88, 0 0 32px 0 #ffd18055;
+  animation: haloSpread 1.2s infinite alternate;
+}
+@keyframes haloSpread {
+  0% { box-shadow: 0 0 16px 0 #b3e5fc88; }
+  100% { box-shadow: 0 0 32px 0 #ffd18055; }
+}
+
+/* --- Split Line with Particle Canvas --- */
+.sidebar-split-line {
+  margin: 18px 0 8px 0;
+  height: 4px;
+  position: relative;
+  background: transparent;
+}
+#sidebarParticles {
+  width: 180px;
+  height: 4px;
+  display: block;
+  background: transparent;
+}
+
+/* --- Workbench Shadow for Folded State --- */
+.sidebar-workbench-shadow {
+  display: none;
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 32px;
+  background: linear-gradient(180deg,rgba(200,215,240,0.00) 0%,rgba(180,200,230,0.18) 100%);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.13);
+  border-bottom-right-radius: 22px;
+  border-bottom-left-radius: 22px;
+  pointer-events: none;
+  z-index: 2;
+}
+.sidebar-glass.folded .sidebar-workbench-shadow {
+  display: block;
+  animation: shadowFadeIn 0.8s;
+}
+@keyframes shadowFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* --- Nano Coating Reflection --- */
+.sidebar-glass:after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg,rgba(255,255,255,0.12) 0%,rgba(180,200,230,0.09) 100%);
+  opacity: 0.7;
+  border-radius: 22px;
+  z-index: 1;
+}
+
+/* --- Responsive & Scrollbar --- */
+@media (max-width: 991px) {
+  .sidebar-glass { width: 100vw; border-radius: 0; }
+}
+.sidebar-sticky {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b3e5fc #f5f7fa;
+}
+.sidebar-sticky::-webkit-scrollbar {
+  width: 6px;
+  background: #f5f7fa;
+}
+.sidebar-sticky::-webkit-scrollbar-thumb {
+  background: #b3e5fc;
+  border-radius: 4px;
+}
+.sidebar-menu .nav-link.active, .sidebar-menu .nav-link:focus {
+  color: #fff;
+  background: linear-gradient(90deg,rgba(255,255,255,0.98) 0%,rgba(180,210,255,0.88) 100%);
+  box-shadow: 0 4px 18px 0 rgba(255,191,64,0.13), 0 2px 8px 0 rgba(52,120,246,0.10);
+  border: 1.5px solid rgba(255,191,64,0.18);
+  filter: drop-shadow(0 0 16px #ffd18088);
+  animation: breathAmber 1.8s infinite alternate;
+}
+@keyframes breathAmber {
+  0% { box-shadow: 0 4px 18px 0 rgba(255,191,64,0.13); }
+  100% { box-shadow: 0 8px 32px 0 rgba(255,191,64,0.22); }
+}
+
+.sidebar-menu .nav-link .sidebar-text {
+  flex: 1;
+  color: #444a53;
+  font-family: 'Noto Sans SC', 'Microsoft YaHei', Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1.08rem;
+  letter-spacing: 0.5px;
+  transition: color 0.2s;
+}
+.sidebar-menu .nav-link.active .sidebar-text {
+  color: #ffb74d;
+  text-shadow: 0 0 8px #fffde7, 0 0 2px #ffd180;
+}
+
+/* --- Urgent Item Coral Orange Border --- */
+.sidebar-menu .nav-item.urgent .nav-link {
+  border: 2px solid #ff7043;
+  box-shadow: 0 0 12px 0 #ff704366;
+  animation: coralFlow 1.2s infinite alternate;
+}
+@keyframes coralFlow {
+  0% { border-color: #ff7043; }
+  100% { border-color: #ffab91; }
+}
+
+/* --- Multi-State Indicator --- */
+.sidebar-menu .nav-link[data-state="success"] {
+  box-shadow: 0 0 0 3px #6fffbf44;
+}
+.sidebar-menu .nav-link[data-state="warning"] {
+  box-shadow: 0 0 0 3px #fff59d55;
+}
+.sidebar-menu .nav-link[data-state="info"] {
+  box-shadow: 0 0 0 3px #ffb6c155;
+}
+
+/* --- Ice Blue Outline for High-Frequency --- */
+.sidebar-menu .nav-link[data-freq="high"] {
+  border: 1.5px solid #b3e5fc;
+  box-shadow: 0 0 8px #b3e5fc55;
+  background: linear-gradient(90deg,rgba(230,245,255,0.98) 0%,rgba(179,229,252,0.88) 100%);
+}
+
+/* --- Fold/Expand Menu Halo Effect --- */
+.sidebar-menu .nav-item.open>.nav-link {
+  box-shadow: 0 0 16px 0 #b3e5fc88, 0 0 32px 0 #ffd18055;
+  animation: haloSpread 1.2s infinite alternate;
+}
+@keyframes haloSpread {
+  0% { box-shadow: 0 0 16px 0 #b3e5fc88; }
+  100% { box-shadow: 0 0 32px 0 #ffd18055; }
+}
+
+/* --- Split Line with Particle Canvas --- */
+.sidebar-split-line {
+  margin: 18px 0 8px 0;
+  height: 4px;
+  position: relative;
+  background: transparent;
+}
+#sidebarParticles {
+  width: 180px;
+  height: 4px;
+  display: block;
+  background: transparent;
+}
+
+/* --- Workbench Shadow for Folded State --- */
+.sidebar-workbench-shadow {
+  display: none;
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 32px;
+  background: linear-gradient(180deg,rgba(200,215,240,0.00) 0%,rgba(180,200,230,0.18) 100%);
+  box-shadow: 0 8px 32px 0 rgba(31,38,135,0.13);
+  border-bottom-right-radius: 22px;
+  border-bottom-left-radius: 22px;
+  pointer-events: none;
+  z-index: 2;
+}
+.sidebar-glass.folded .sidebar-workbench-shadow {
+  display: block;
+  animation: shadowFadeIn 0.8s;
+}
+@keyframes shadowFadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* --- Nano Coating Reflection --- */
+.sidebar-glass:after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg,rgba(255,255,255,0.12) 0%,rgba(180,200,230,0.09) 100%);
+  opacity: 0.7;
+  border-radius: 22px;
+  z-index: 1;
+}
+
+/* --- Responsive & Scrollbar --- */
+@media (max-width: 991px) {
+  .sidebar-glass { width: 100vw; border-radius: 0; }
+}
+.sidebar-sticky {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b3e5fc #f5f7fa;
+}
+.sidebar-sticky::-webkit-scrollbar {
+  width: 6px;
+  background: #f5f7fa;
+}
+.sidebar-sticky::-webkit-scrollbar-thumb {
+  background: #b3e5fc;
+  border-radius: 4px;
+}
