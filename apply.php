@@ -1,6 +1,114 @@
 <?php
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
+
+// Handle ICP Application Submission
+error_log('apply.php: Received POST request.'); // 新增日志：记录收到POST请求
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && 
+    isset($_POST['website_type'], $_POST['website_name'], $_POST['domain_name'], 
+          $_POST['contact_email'], $_POST['website_desc'], $_POST['qq_number'])) {
+
+    $website_type = trim($_POST['website_type']);
+    $website_name = trim($_POST['website_name']);
+    $domain_name = trim($_POST['domain_name']);
+    $contact_email = trim($_POST['contact_email']);
+    $website_desc = trim($_POST['website_desc']);
+    $qq_number = trim($_POST['qq_number']);
+    $user_ip = $_SERVER['REMOTE_ADDR'];
+
+    // Log all POST data for debugging
+    error_log('apply.php: POST data received: ' . print_r($_POST, true));
+
+    // Basic validation
+    if (empty($website_type) || empty($website_name) || empty($domain_name) || 
+        !filter_var($contact_email, FILTER_VALIDATE_EMAIL) || 
+        empty($website_desc) || empty($qq_number)) {
+
+        // Detailed validation failure logging
+        if (empty($website_type)) {
+            error_log('apply.php: Validation failed - website_type is empty.');
+        }
+        if (empty($website_name)) {
+            error_log('apply.php: Validation failed - website_name is empty.');
+        }
+        if (empty($domain_name)) {
+            error_log('apply.php: Validation failed - domain_name is empty.');
+        }
+        if (!filter_var($contact_email, FILTER_VALIDATE_EMAIL)) {
+            error_log('apply.php: Validation failed - contact_email is invalid. Value: ' . htmlspecialchars($contact_email ?? 'N/A'));
+        }
+        if (empty($website_desc)) {
+            error_log('apply.php: Validation failed - website_desc is empty.');
+        }
+        if (empty($qq_number)) {
+            error_log('apply.php: Validation failed - qq_number is empty.');
+        }
+        
+        header("Location: apply_result.php?success=0&error=invalid_input");
+        exit;
+    }
+
+    // 记录尝试连接数据库和准备执行插入操作
+    error_log('apply.php: Attempting to connect to database and prepare ICP application insert. Domain: ' . htmlspecialchars($domain_name ?? 'N/A'));
+    error_log('apply.php: Entering try block for database operations. Domain: ' . htmlspecialchars($domain_name ?? 'N/A')); // 新增日志
+    try {
+        $db = db_connect();
+        // Use '审核中' as default pending status, or STATUS_PENDING if defined in config.php
+        $status = defined('STATUS_PENDING') ? STATUS_PENDING : '审核中'; 
+        $application_number = generate_application_number(); // 生成申请编号
+
+        $stmt = $db->prepare(
+            "INSERT INTO icp_applications (application_number, website_type, website_name, domain_name, contact_email, website_desc, qq_number, status) 
+             VALUES (:application_number, :website_type, :website_name, :domain_name, :contact_email, :website_desc, :qq_number, :status)"
+        );
+        
+        $stmt->execute([
+            ':application_number' => $application_number,
+            ':website_type' => $website_type,
+            ':website_name' => $website_name,
+            ':domain_name' => $domain_name,
+            ':contact_email' => $contact_email,
+            ':website_desc' => $website_desc,
+            ':qq_number' => $qq_number,
+            ':status' => $status
+        ]);
+
+        if ($stmt->rowCount() > 0) {
+            header("Location: apply_result.php?success=1");
+            exit;
+        } else {
+            error_log('ICP Application submission failed: 0 rows affected. Domain: ' . htmlspecialchars($domain_name));
+            header("Location: apply_result.php?success=0&error=db_insert_failed");
+            exit;
+        }
+
+    } catch (PDOException $e) {
+        // 记录捕获到PDOException
+        error_log('Caught PDOException during ICP application submission. Domain: ' . htmlspecialchars($domain_name ?? 'N/A') . '. Error: ' . $e->getMessage());
+        error_log('apply.php: Caught PDOException during ICP application submission. Domain: ' . htmlspecialchars($domain_name ?? 'N/A') . '. Error: ' . $e->getMessage() . ' (Code: ' . $e->getCode() . ') File: ' . $e->getFile() . ' Line: ' . $e->getLine()); // 简化日志记录
+        // 原始详细日志已注释掉，如果需要详细信息可以取消注释下面的行
+        /*
+        $logMessage = "ICP Application submission failed (PDOException):\n";
+        $logMessage .= "Error Code: " . $e->getCode() . "\n";
+        $logMessage .= "Error Message: " . $e->getMessage() . "\n";
+        $logMessage .= "File: " . $e->getFile() . "\n";
+        $logMessage .= "Line: " . $e->getLine() . "\n";
+        // $logMessage .= "Trace: " . $e->getTraceAsString() . "\n"; 
+        $logMessage .= "Submitted Data (sanitized for logging):\n";
+        $logMessage .= "  Company Type: " . htmlspecialchars($company_type ?? 'N/A') . "\n";
+        $logMessage .= "  Website Name: " . htmlspecialchars($website_name ?? 'N/A') . "\n";
+        $logMessage .= "  Domain Name: " . htmlspecialchars($domain_name ?? 'N/A') . "\n";
+        $logMessage .= "  Contact Email: " . htmlspecialchars($contact_email ?? 'N/A') . "\n";
+        $logMessage .= "  QQ Number: " . htmlspecialchars($qq_number ?? 'N/A') . "\n";
+        $logMessage .= "  User IP: " . htmlspecialchars($user_ip ?? 'N/A') . "\n";
+        $logMessage .= "  Status to be set: " . htmlspecialchars($status ?? 'N/A') . "\n";
+        error_log($logMessage);
+        */
+        header("Location: apply_result.php?success=0&error=db_exception");
+        exit;
+    }
+}
+
 require_once 'includes/header.php';
 
 // 获取品牌LOGO文字
@@ -21,8 +129,12 @@ try {
 
 // 域名状态提示逻辑
 $domain_status_msg = '';
+error_log('apply.php: Received POST request.'); // 新增日志：记录收到POST请求
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['domain_name'])) {
     $domain_name = trim($_POST['domain_name']);
+    // 记录尝试连接数据库和准备执行插入操作
+    error_log('apply.php: Attempting to connect to database and prepare ICP application insert. Domain: ' . htmlspecialchars($domain_name ?? 'N/A'));
+    error_log('apply.php: Entering try block for database operations. Domain: ' . htmlspecialchars($domain_name ?? 'N/A')); // 新增日志
     try {
         $db = db_connect();
         $stmt = $db->prepare("SELECT status FROM icp_applications WHERE domain_name = :domain_name ORDER BY id DESC LIMIT 1");
@@ -181,7 +293,7 @@ body {
     <div class="icp-form-box">
         <form id="applyForm" method="post" action="apply.php">
             <label>备案类型</label>
-            <select name="company_type" required>
+            <select name="website_type" required>
                 <option value="">请选择</option>
                 <option value="个人">个人备案</option>
                 <option value="企业">企业备案</option>
