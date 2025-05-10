@@ -1,9 +1,9 @@
 # CP-Virtual-ICP-Filing-System 备案系统
 
 ## 作者联系方式和企鹅群
-:penguin:联系方式QQ 2154126424快加进来
+:penguin:联系方式QQ 2154126424
 
-:penguin:企鹅群[点击链接跳转](https://qm.qq.com/q/wYWJDVREk0)
+:penguin:企鹅群[点击链接跳转](https://qm.qq.com/q/wYWJDVREk0)快加进来
 
 ## 项目简介
 
