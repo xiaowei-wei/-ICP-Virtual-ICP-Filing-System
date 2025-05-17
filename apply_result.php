@@ -19,6 +19,8 @@ try {
 }
 
 $success = isset($_GET['success']) && $_GET['success'] == '1';
+$app_number = isset($_GET['app_number']) ? htmlspecialchars($_GET['app_number']) : '';
+$is_auto = isset($_GET['auto']) && $_GET['auto'] == '1';
 ?>
 <style>
 body {
@@ -149,9 +151,30 @@ body {
     <div class="icp-result-box">
         <?php if ($success): ?>
             <div class="icp-alert-success">您的备案申请已提交成功，请耐心等待审核！</div>
+            <?php if(!empty($app_number)): ?>
+            <div style="margin-top: 1rem; padding: 1rem; background-color: #f0f8ff; border-radius: 0.5rem; color: #4a7cff; font-weight: bold;">
+                您的备案号：<?php echo $app_number; ?>
+                <?php if($is_auto): ?><br><small>(系统自动分配)</small><?php endif; ?>
+            </div>
+            <?php endif; ?>
             <a href="apply_status.php" class="icp-btn">查看申请进度</a>
-        <?php else: ?>
-            <div class="icp-alert-danger">备案申请提交失败，请检查信息后重试。</div>
+        <?php else:
+            $error_message = "备案申请提交失败，请检查信息后重试。"; // 默认消息
+            if (isset($_GET['error'])) {
+                switch ($_GET['error']) {
+                    case 'invalid_input':
+                        $error_message = "输入信息无效，请检查所有字段并重试。";
+                        break;
+                    case 'db_insert_failed':
+                        $error_message = "数据库操作失败，无法保存您的申请，请稍后重试。";
+                        break;
+                    case 'db_exception':
+                        $error_message = "数据库连接或查询时发生错误，请联系管理员或稍后重试。";
+                        break;
+                }
+            }
+        ?>
+            <div class="icp-alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
             <a href="apply.php" class="icp-btn" style="background:#f6f8fa;color:#4a7cff;">返回重新申请</a>
         <?php endif; ?>
     </div>

@@ -2,6 +2,8 @@
 require_once 'includes/config.php';
 require_once 'includes/functions.php';
 
+session_start(); // 确保会话已启动
+
 // Handle ICP Application Submission
 error_log('apply.php: Received POST request.'); // 新增日志：记录收到POST请求
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && 
@@ -51,38 +53,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
     // 记录尝试连接数据库和准备执行插入操作
     error_log('apply.php: Attempting to connect to database and prepare ICP application insert. Domain: ' . htmlspecialchars($domain_name ?? 'N/A'));
     error_log('apply.php: Entering try block for database operations. Domain: ' . htmlspecialchars($domain_name ?? 'N/A')); // 新增日志
+    // 将申请数据存储到会话中，以便在选号页面使用
+    $_SESSION['application_data'] = [
+        'website_type' => $website_type,
+        'website_name' => $website_name,
+        'domain_name' => $domain_name,
+        'contact_email' => $contact_email,
+        'website_desc' => $website_desc,
+        'qq_number' => $qq_number,
+        'user_ip' => $user_ip
+    ];
+
+    // 重定向到选号页面
+    header("Location: select_number.php");
+    exit;
+
+    /* // 原有的数据库插入逻辑将移至 select_number.php
     try {
         $db = db_connect();
         // Use '审核中' as default pending status, or STATUS_PENDING if defined in config.php
         $status = defined('STATUS_PENDING') ? STATUS_PENDING : '审核中'; 
-        $application_number = generate_application_number(); // 生成申请编号
+        // $application_number = generate_application_number(); // 申请编号将在选号后确定
 
-        $stmt = $db->prepare(
-            "INSERT INTO icp_applications (application_number, website_type, website_name, domain_name, contact_email, website_desc, qq_number, status) 
-             VALUES (:application_number, :website_type, :website_name, :domain_name, :contact_email, :website_desc, :qq_number, :status)"
-        );
-        
-        $stmt->execute([
-            ':application_number' => $application_number,
-            ':website_type' => $website_type,
-            ':website_name' => $website_name,
-            ':domain_name' => $domain_name,
-            ':contact_email' => $contact_email,
-            ':website_desc' => $website_desc,
-            ':qq_number' => $qq_number,
-            ':status' => $status
-        ]);
+        // 此处不再直接插入数据库，而是跳转到选号页面
+        // ... 原插入逻辑注释或移除 ...
 
-        if ($stmt->rowCount() > 0) {
-            header("Location: apply_result.php?success=1");
-            exit;
-        } else {
-            error_log('ICP Application submission failed: 0 rows affected. Domain: ' . htmlspecialchars($domain_name));
-            header("Location: apply_result.php?success=0&error=db_insert_failed");
-            exit;
-        }
+    } catch (PDOException $e) { */
+    // 如果在存储到session前发生错误，这里的catch逻辑可能仍然需要，但目前流程是先存储再跳转
+    // 为保持结构，暂时保留catch，但其内部逻辑可能不再适用或需要调整
+    // 实际上，由于我们只是存储到session并跳转，这里的try-catch可能不再直接处理数据库错误
+    // 除非 db_connect() 或其他操作在存储session前失败
+    // 为了简化，我们假设session存储不会抛出PDOException
+    // 如果有其他类型的错误需要捕获，可以调整
+    // } catch (PDOException $e) { // 这部分逻辑已移至 select_number.php 或不再直接适用
 
-    } catch (PDOException $e) {
         // 记录捕获到PDOException
         error_log('Caught PDOException during ICP application submission. Domain: ' . htmlspecialchars($domain_name ?? 'N/A') . '. Error: ' . $e->getMessage());
         error_log('apply.php: Caught PDOException during ICP application submission. Domain: ' . htmlspecialchars($domain_name ?? 'N/A') . '. Error: ' . $e->getMessage() . ' (Code: ' . $e->getCode() . ') File: ' . $e->getFile() . ' Line: ' . $e->getLine()); // 简化日志记录
@@ -107,7 +111,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
         header("Location: apply_result.php?success=0&error=db_exception");
         exit;
     }
-}
 
 require_once 'includes/header.php';
 
@@ -280,6 +283,7 @@ body {
         <a href="about.php">关于</a>
         <a href="apply.php">加入</a>
         <a href="public_info.php">公示</a>
+       
         <a href="apply_status.php">备案申请进度</a>
         
         

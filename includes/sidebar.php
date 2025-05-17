@@ -57,6 +57,12 @@
           <span class="sidebar-text">SEO设置</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link <?php echo (basename($_SERVER['PHP_SELF']) == 'manage_selectable_numbers.php') ? 'active' : ''; ?>" href="manage_selectable_numbers.php">
+          <span class="sidebar-icon list-icon"></span> <!-- 您可能需要为这个图标选择一个合适的类名或SVG -->
+          <span class="sidebar-text">号码池管理</span>
+        </a>
+      </li>
       <li class="nav-item urgent">
         <a class="nav-link" href="logout.php">
           <span class="sidebar-icon logout-icon"></span>

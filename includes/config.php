@@ -1,4 +1,9 @@
 <?php
+session_start();
+// 错误报告设置
+ini_set('display_errors', 0); // 禁止在浏览器中显示错误
+ini_set('display_startup_errors', 0); // 禁止在浏览器中显示启动错误
+error_reporting(E_ALL);
 // 检查数据库配置文件是否存在且有效，未安装则跳转到安装页面
 if (!file_exists(__DIR__ . '/../config/database.php') || filesize(__DIR__ . '/../config/database.php') === 0) {
     header('Location: /install.php');
@@ -30,7 +35,6 @@ try {
 // 系统配置文件
 
 // 开启会话
-session_start();
 
 // 设置时区
 date_default_timezone_set('Asia/Shanghai');
@@ -42,11 +46,6 @@ define('ADMIN_EMAIL', 'admin@example.com');
 
 // 引入数据库配置
 require_once __DIR__ . '/../config/database.php';
-
-// 错误报告设置
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 // 系统常量
 define('STATUS_PENDING', 'pending');

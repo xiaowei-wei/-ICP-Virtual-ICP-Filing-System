@@ -202,6 +202,7 @@ body {
         <a href="index.php">主页</a>
         <a href="about.php">关于</a>
         <a href="apply.php">加入</a>
+        
         <a href="public_info.php">公示</a>
         <a href="apply_status.php">备案申请进度</a>
         

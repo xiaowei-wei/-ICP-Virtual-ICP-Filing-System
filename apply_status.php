@@ -155,6 +155,7 @@ body {
         <a href="index.php">主页</a>
         <a href="about.php">关于</a>
         <a href="apply.php">加入</a>
+       
         <a href="public_info.php">公示</a>
         <a href="apply_status.php">备案申请进度</a>
     </nav>
@@ -172,18 +173,22 @@ body {
                 <li>QQ号码：<?php echo htmlspecialchars($application['qq_number']); ?></li>
                 <li>申请时间：<?php echo htmlspecialchars($application['created_at']); ?></li>
                 <li>当前状态：
-                    <?php if ($application['status']==='已通过'): ?>
+                    <?php if ($application['status'] === STATUS_APPROVED): ?>
                         <span class="icp-badge icp-badge-success">已通过</span>
-                    <?php elseif ($application['status']==='驳回'): ?>
+                    <?php elseif ($application['status'] === STATUS_REJECTED): ?>
                         <span class="icp-badge icp-badge-danger">驳回</span>
                     <?php else: ?>
                         <span class="icp-badge icp-badge-warning">审核中</span>
                     <?php endif; ?>
                 </li>
-                <?php if ($application['status'] === '已通过'): ?>
-                    <li>备案号：<strong><?php echo htmlspecialchars($application['record_no']); ?></strong></li>
-                    <li>审核时间：<?php echo htmlspecialchars($application['reviewed_at']); ?></li>
-                <?php elseif ($application['status'] === '驳回'): ?>
+                <?php if ($application['status'] === STATUS_APPROVED): ?>
+                    <?php if (isset($application['record_no']) && !empty($application['record_no'])): ?>
+                        <li>备案号：<strong><?php echo htmlspecialchars($application['record_no']); ?></strong></li>
+                    <?php endif; ?>
+                    <?php if (isset($application['reviewed_at']) && !empty($application['reviewed_at'])): ?>
+                        <li>审核时间：<?php echo htmlspecialchars($application['reviewed_at']); ?></li>
+                    <?php endif; ?>
+                <?php elseif ($application['status'] === STATUS_REJECTED): ?>
                     <li style="color:#dc3545;">驳回原因：<?php echo htmlspecialchars($application['reject_reason']); ?></li>
                 <?php endif; ?>
             </ul>

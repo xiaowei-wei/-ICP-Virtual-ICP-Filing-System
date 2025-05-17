@@ -27,14 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     // 登录成功
                     $_SESSION['admin_id'] = $user['id'];
                     $_SESSION['admin_username'] = $user['username'];
+                    // session_regenerate_id(true); // Temporarily removed for debugging
+                    // session_write_close(); // Temporarily removed for debugging
                     
                     // 更新最后登录时间
                     $update = $db->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = :id");
                     $update->execute(['id' => $user['id']]);
                     
-                    // 记录登录日志
                     log_operation($user['id'], '管理员登录');
                     
+                    session_write_close(); // 确保会话数据在跳转前写入
                     // 重定向到管理后台
                     header('Location: dashboard.php');
                     exit;

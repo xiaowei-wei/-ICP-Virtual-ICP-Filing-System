@@ -51,17 +51,20 @@ function generate_icp_number() {
  * @return PDO 数据库连接对象
  */
 function db_connect() {
+    error_log('db_connect() called.'); // 新增日志
     static $pdo = null;
     if ($pdo === null) {
-        require_once __DIR__ . '/config.php';
+        // require_once __DIR__ . '/config.php'; // 移除此行
+        error_log('Attempting to establish PDO connection...'); // 新增日志
         try {
             $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
             $pdo = new PDO($dsn, DB_USER, DB_PASS, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
+            error_log('PDO connection established successfully.'); // 新增日志
         } catch (PDOException $e) {
-            error_log('数据库连接失败: ' . $e->getMessage());
+            error_log('PDO connection failed in db_connect(): ' . $e->getMessage() . ' (Code: ' . $e->getCode() . ')'); // 修改日志
             throw $e;
         }
     }
@@ -212,4 +215,13 @@ function pagination($total, $page, $limit, $url = '?page={page}') {
     $html .= '</ul></nav>';
     
     return $html;
+}
+
+/**
+ * 获取网站品牌LOGO
+ * @return string LOGO图片路径或空字符串
+ */
+function get_site_brand_logo() {
+    // 临时返回空字符串，后续可以从配置或数据库中获取
+    return ''; 
 }

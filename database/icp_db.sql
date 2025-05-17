@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `icp_applications` (
   `qq_number` varchar(20) DEFAULT NULL,
   `website_type` varchar(50) DEFAULT NULL,
   `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `user_ip` varchar(45) DEFAULT NULL,
   `icp_number` varchar(50) DEFAULT NULL,
   `review_admin_id` int(11) DEFAULT NULL,
   `review_time` datetime DEFAULT NULL,

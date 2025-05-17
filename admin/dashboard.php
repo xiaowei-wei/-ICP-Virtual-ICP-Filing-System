@@ -20,6 +20,53 @@ try {
     $rejected_applications = $stmt->fetch()['rejected'];
     $stmt = $db->query("SELECT * FROM icp_applications ORDER BY created_at DESC LIMIT 5");
     $recent_applications = $stmt->fetchAll();
+
+    // 获取最近6个月的备案趋势数据
+    $line_chart_labels_php = [];
+    $line_chart_data_php = [];
+    $months_data_for_chart = []; // Associative array YYYY-MM => count
+
+    // 初始化最近6个月的标签和数据 (from 5 months ago to current month)
+    for ($i = 5; $i >= 0; $i--) {
+        $date = new DateTime("first day of this month");
+        $date->modify("-$i months");
+        $month_key = $date->format('Y-m');
+        $line_chart_labels_php[] = $date->format('n月'); // e.g., "3月"
+        $months_data_for_chart[$month_key] = 0; // Initialize count
+    }
+
+    // 从数据库获取实际数据
+    // IMPORTANT: The date function strftime('%Y-%m', created_at) is for SQLite.
+    // For MySQL, use: DATE_FORMAT(created_at, '%Y-%m')
+    // For PostgreSQL, use: TO_CHAR(created_at, 'YYYY-MM')
+    // 您可能需要根据您的数据库系统调整查询语句。
+    $oldest_month_to_fetch_for_chart = (new DateTime("first day of this month"))->modify("-5 months")->format('Y-m-01 00:00:00');
+
+    $sql_trend_chart = "
+        SELECT 
+          /* strftime('%Y-%m', created_at) as month_year, */
+            COUNT(*) as count 
+        FROM icp_applications 
+        WHERE created_at >= :oldest_month 
+        GROUP BY month_year 
+        ORDER BY month_year ASC";
+    
+    $stmt_trend_chart = $db->prepare($sql_trend_chart);
+    $stmt_trend_chart->bindParam(':oldest_month', $oldest_month_to_fetch_for_chart);
+    $stmt_trend_chart->execute();
+    $trend_results_chart = $stmt_trend_chart->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($trend_results_chart as $row_chart) {
+        if (array_key_exists($row_chart['month_year'], $months_data_for_chart)) {
+            $months_data_for_chart[$row_chart['month_year']] = (int)$row_chart['count'];
+        }
+    }
+
+    // Populate $line_chart_data_php in the correct order
+    foreach ($months_data_for_chart as $count_chart) {
+        $line_chart_data_php[] = $count_chart;
+    }
+
 } catch (PDOException $e) {
     error_log('获取统计数据失败: ' . $e->getMessage());
     $error = '获取数据失败，请稍后再试';
@@ -252,10 +299,10 @@ $page_title = '管理仪表盘';
         var lineChart = new Chart(document.getElementById('lineChart'), {
             type: 'line',
             data: {
-                labels: ['1月','2月','3月','4月','5月','6月','7月'],
+                labels: <?php echo json_encode($line_chart_labels_php ?? []); ?>,
                 datasets: [{
                     label: '备案数',
-                    data: [12, 19, 8, 15, 22, 17, 25],
+                    data: <?php echo json_encode($line_chart_data_php ?? []); ?>, // 使用PHP传递过来的数据
                     backgroundColor: 'rgba(33,150,243,0.08)',
                     borderColor: '#2196f3',
                     borderWidth: 2,
